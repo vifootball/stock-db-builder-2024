@@ -1,7 +1,7 @@
 import pandas as pd
 import investpy
 
-def get_currency_profile() -> pd.DataFrame:
+def get_currency_master() -> pd.DataFrame:
     currency = investpy.currency_crosses.get_currency_crosses()
     base_cur = ['KRW', 'USD']
     currency = currency[currency['base'].isin(base_cur)].reset_index(drop=True)
@@ -17,6 +17,6 @@ def get_currency_profile() -> pd.DataFrame:
     return currency
 
 def get_currencies() -> list:
-    currency_profile = get_currency_profile()
+    currency_profile = get_currency_master()
     currency_list = currency_profile['symbol'].to_list()
     return currency_list
