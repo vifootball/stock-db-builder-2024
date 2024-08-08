@@ -1,11 +1,11 @@
-from typing import Union
+from typing import Union, Optional
 import pandas as pd
 import yfinance as yf
 import datetime as dt
 import pandas_datareader.data as web # FRED Data
 
 
-def get_history_from_yf(symbol: str) -> Union[pd.DataFrame, None]:
+def get_history_from_yf(symbol: str) -> Optional[pd.DataFrame]:
     # get raw data    
     # history = yf.Ticker(symbol).history(period='max').reset_index(drop=False) # date가 index
     history = yf.Ticker(symbol).history(period='100000mo')
