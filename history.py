@@ -8,8 +8,12 @@ import pandas_datareader.data as web # FRED Data
 def get_history_from_yf(symbol: str) -> Union[pd.DataFrame, None]:
     # get raw data    
     # history = yf.Ticker(symbol).history(period='max').reset_index(drop=False) # date가 index
-    history = yf.Ticker(symbol).history(period='100000mo').reset_index(drop=False) # date가 index
+    history = yf.Ticker(symbol).history(period='100000mo')
+    if history.empty: # 데이터프레임 비어있으면 "max" 파라미터로 다시 받아온다
+        history = yf.Ticker(symbol).history(period='max')
 
+    history = history.reset_index(drop=False) # date가 index
+    
     if len(history) > 50:
     # 데이터가 어느정도 있으면서 최근까지 업데이트 되는 종목만 수집하고자 함 
     # 정상데이터가 아니라면, 데이터가 아예 없거나 과거 데이터만 있음
