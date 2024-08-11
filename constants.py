@@ -8,8 +8,9 @@ class Etfs:
         'BGU', 'BHF', 'BHFAL', 'BHFAN', 'BHFAO', 'BHFAO', 'BHFAP', 'BKKCF', 'BNPC', 
         'BRIL', 'BSCD', 'BSCB', 'BSJC', 'BSJD', 'BTAH',
         'CHAI', 'CNFRL', 'COWL', 'CRBA', 'CRBI', 'CZI',
-        'DBCN', 'DBGCF', 'DTE', 'DTP',
+        'DBCN', 'DBGCF', 'DIP', 'DTE', 'DTP',
         'EATX', 'EFN', 'EMER' ,'EMGX', 'EMVX', 'ENBA', 'EQIN', 'EWAC', 'EWEF', 'EWSM',
+        'EMFM', 'ESGN', 'ESGS', 'FBGX'
         'FCGS', 'FCGL', 'FHC', 'FLG', 'FLYX', 'FOC', 'FUI', 'FXRU', 'FZB',
         'GDLC', 'GRPC',
         'HBTA', 'HTGC', 'HMTM', 'HVOL',
