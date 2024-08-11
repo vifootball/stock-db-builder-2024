@@ -41,7 +41,8 @@ def calculate_grade(master_symbol, history_symbol, history_market, unit_period='
     df['expense_ratio'] = master_symbol['expense_ratio'].squeeze()
     df['nav'] = history_symbol.loc[history_symbol['date'] == end_date]['price'].squeeze()
     df['shares_outstanding'] = master_symbol['shares_outstanding'].squeeze()
-    df['aum'] = (df['nav'] * df['shares_outstanding']).squeeze()
+    # df['aum'] = (df['nav'] * df['shares_outstanding']).squeeze() # 마스터 매일 최신화 할 수 없으면 이걸로 하기
+    df['aum'] = master_symbol['aum'].squeeze() # 마스터도 매일 최신화 할 수 있으며 이걸로 하기
     df['total_return' ] = (history_symbol['price'].loc[history_symbol['date'] == end_date].squeeze() / history_symbol['price'].loc[history_symbol['date'] == start_date].squeeze()) - 1
     df['cagr'] = (1 + df['total_return']) ** (1 / ((end_date - start_date).days / 365.25) ) - 1
     df['std_yearly_return'] = history_symbol.set_index('date')['price'].resample('YE').last().pct_change().std() # 올해는 최근일 기준
