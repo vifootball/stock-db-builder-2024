@@ -7,7 +7,7 @@ from urllib.request import urlopen, Request
 from parse_str import *
 
 def get_symbols() -> list:
-    fname = "./etf_list/etf_list_240605_union.csv"
+    fname = "./downloads/etf_list/etf_list_240605_union.csv"
     etf_list = pd.read_csv(fname)
     symbols = sorted(etf_list['symbol'].to_list())
     return symbols
@@ -138,7 +138,7 @@ def get_etf_info(symbol: str): #measures
     expense_ratio = percentage_to_float(etf_data.get("expenseRatio"))
     shares_outstanding = str_to_int(etf_data.get("sharesOut"))
     dividend_yield = percentage_to_float(etf_data.get("dividendYield"))
-    inception = datetime.strptime(etf_data.get("inception"), "%b %d, %Y").strftime("%Y-%m-%d") if etf_data.get("inception") else None
+    inception_date = datetime.strptime(etf_data.get("inception"), "%b %d, %Y").strftime("%Y-%m-%d") if etf_data.get("inception") else None
     description = etf_data.get("description")
     holdings_count = etf_data.get("holdings")
 
@@ -157,7 +157,7 @@ def get_etf_info(symbol: str): #measures
         "expense_ratio": expense_ratio,
         "shares_outstanding": shares_outstanding,
         "dividend_yield": dividend_yield,
-        "inception": inception,
+        "inception_date": inception_date,
         "description": description,
         "holdings_count": holdings_count,
         "holdings_top10_percentage": holdings_top10_percentage,
