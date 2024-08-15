@@ -2,10 +2,13 @@ import os
 import pandas as pd
 import datetime as dt
 from tqdm import tqdm
+import warnings
+
 
 pd.options.mode.chained_assignment = None
 
 def calculate_grade(master_symbol, history_symbol, history_market, unit_period='all_time'):
+    """unit_priod에 맞는 grade 생성"""
     history_symbol['date'] = pd.to_datetime(history_symbol['date'])
     history_market['date'] = pd.to_datetime(history_market['date'])
 
@@ -70,7 +73,7 @@ def generate_grades_by_period(master_symbol, history_symbol, history_market):
     """다양한 기간에 대한 summary grade 생성."""
     
     inception_date = pd.to_datetime(master_symbol['inception_date']).squeeze()
-    current_date = history_symbol['date'].max()
+    current_date = pd.to_datetime(history_symbol['date'].max())
     
     # 사용 가능한 unit_periods 동적으로 계산
     years_elapsed = (current_date - inception_date).days / 365.25
@@ -88,14 +91,54 @@ def generate_grades_by_period(master_symbol, history_symbol, history_market):
     return pd.concat(grades, ignore_index=True)
 
 
-def pivot_summary_grade(grade):
-    pass
+def pivot_grades(grades):
+    dims = [
+        'symbol',
+        'start_date',
+        'end_date',
+        'unit_period',
+    ]
+    all_cols = grades.columns.to_list()
+    # measures = list(set(all_cols) - set(dims))
+    
+    grades_pivotted = pd.melt(grades, id_vars=dims, var_name='var_name').sort_values(by=dims).reset_index(drop=True)
+    return grades_pivotted
 
 
-# def run_main():
-    # collect -> concat -> pivot
+def collect_grades():
+    warnings.filterwarnings('ignore', category=RuntimeWarning)
+
+    # 고정 데이터 로드
+    masterdata = pd.read_csv("./downloads/etf_masters.csv")
+    history_market = pd.read_csv("./downloads/history/etf/SPY_history.csv")
+
+    # 히스토리 데이터 경로 설정
+    dirpath = './downloads/history/etf'
+    fname_list = sorted(os.listdir('./downloads/history/etf'))
+
+    # 반복문으로 history들에 대한 grade를 구함
+    print("[Collect Grades] [1/3] Collecting Grades...")
+    grades = []
+    for fname in tqdm(fname_list[:], mininterval=0.5):
+        fpath = os.path.join(dirpath, fname)
+        
+        history_symbol = pd.read_csv(fpath)
+        symbol = history_symbol['symbol'][0]
+        master_symbol = masterdata[masterdata['symbol']==symbol]
+        df = generate_grades_by_period(master_symbol=master_symbol, history_symbol=history_symbol, history_market=history_market)
+        grades.append(df)
+    print("[Collect Grades] [1/3] Collecting Grades Completed")
+
+    # concat하여 grades 저장
+    grades = pd.concat(grades).reset_index(drop=True)
+    grades.to_csv('./downloads/etf_grades.csv', index=False)
+    print("[Collect Grades] [2/3] Grades Saved")
+
+    # concat한거 pivotting 하여 저장
+    grades_pivotted = pivot_grades(grades)
+    grades_pivotted.to_csv('./downloads/etf_grades_pivotted.csv', index=False)
+    print("[Collect Grades] [3/3] Grades Pivotted Saved")
 
 
 if __name__ == '__main__':
-    # run_main()
-    pass
+    collect_grades()
