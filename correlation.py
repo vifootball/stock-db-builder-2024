@@ -45,7 +45,7 @@ def get_corr(base_history, target_history, unit_period='all_time'):
     return corr_data
 
 
-def get_avilaible_corrs(base_history, target_history):
+def get_availaible_corrs(base_history, target_history):
     base_max_date = pd.to_datetime(base_history['date']).max()
     base_min_date = pd.to_datetime(base_history['date']).min()
     base_total_years = (base_max_date - base_min_date).days / 365.25   
@@ -79,3 +79,51 @@ def get_avilaible_corrs(base_history, target_history):
         return df
     else:
         return None
+
+def collect_corrs():
+    # 진행상황 알 수 있는 프린트 문 작성하기
+
+    # 히스토리 데이터 경로 설정
+    dirpath = './downloads/history/etf'
+    base_fname_list = sorted([x for x in os.listdir('./downloads/history/etf') if x.endswith('csv')])
+    target_fname_list = sorted([x for x in os.listdir('./downloads/history/etf') if x.endswith('csv')])
+
+    # base 마다 target과 의 상관관계를 계산하여 파일로 저장
+    for base_fname in tqdm(base_fname_list[:5], mininterval=0.5):
+        
+        corrs_list = []
+        
+        # Load base history
+        base_fpath = os.path.join(dirpath, base_fname)
+        base_history = pd.read_csv(base_fpath)
+        base_symbol = base_history['symbol'][0]
+        print(base_symbol)
+
+        # target을 하나씩 불러와서 base와 상관관계 계산
+        for target_fname in target_fname_list[:300]:
+            
+            # Load target history
+            target_fpath = os.path.join(dirpath, target_fname)
+            target_history = pd.read_csv(target_fpath)
+
+            corrs = get_availaible_corrs(base_history, target_history)
+            corrs_list.append(corrs)
+        
+        corrs_list = pd.concat(corrs_list)
+        
+        # 상관관계 순위 매기기
+        corrs_list['rank_yearly_asc'] = corrs_list.groupby('unit_period')['corr_yearly'].rank(method='max')
+        corrs_list['rank_yearly_desc'] = corrs_list.groupby('unit_period')['corr_yearly'].rank(method='max', ascending=False)
+        corrs_list['rank_monthly_asc'] = corrs_list.groupby('unit_period')['corr_monthly'].rank(method='max')
+        corrs_list['rank_monthly_desc'] = corrs_list.groupby('unit_period')['corr_monthly'].rank(method='max', ascending=False)
+        corrs_list['rank_weekly_asc'] = corrs_list.groupby('unit_period')['corr_weekly'].rank(method='max')
+        corrs_list['rank_weekly_desc'] = corrs_list.groupby('unit_period')['corr_weekly'].rank(method='max', ascending=False)
+        corrs_list['rank_daily_asc'] = corrs_list.groupby('unit_period')['corr_daily'].rank(method='max')
+        corrs_list['rank_daily_desc'] = corrs_list.groupby('unit_period')['corr_daily'].rank(method='max', ascending=False)
+
+        # base에 대한 corrs 파일 저장
+        os.makedirs('downloads/correlation/', exist_ok=True)
+        corrs_list.to_csv(f'downloads/correlation/{base_symbol}_correlations.csv', index=False)
+
+
+    
