@@ -1,5 +1,6 @@
 import pandas as pd
 import investpy
+import financedatabase as fd
 import constants
 
 # Sources:
@@ -52,10 +53,10 @@ def get_indices_masters_fred() -> pd.DataFrame:
 
 def concat_indices_masters():
     # 중복제거 필요
-    indices_masters_investpy = pd.read_csv('./downloads/masters_indices/masters_indices_investpy.csv')
-    indices_masters_fd = pd.read_csv('./downloads/masters_indices/masters_indices_fd.csv')
-    indices_masters_yahoo = pd.read_csv('./downloads/masters_indices/masters_indices_yahoo.csv')
-    indices_masters_fred = pd.read_csv('./downloads/masters_indices/masters_indices_fred.csv')
+    indices_masters_investpy = pd.read_csv('./downloads/index_master/index_master_investpy.csv')
+    indices_masters_fd = pd.read_csv('./downloads/index_master/index_master_fd.csv')
+    indices_masters_yahoo = pd.read_csv('./downloads/index_master/index_master_yahoo.csv')
+    indices_masters_fred = pd.read_csv('./downloads/index_master/index_master_fred.csv')
     indices_masters = pd.concat([
         indices_masters_investpy,
         indices_masters_fd,
@@ -66,4 +67,4 @@ def concat_indices_masters():
     
     header = pd.DataFrame(columns=['domain', 'symbol', 'name'])
     indices_masters = pd.concat([header, indices_masters])
-    indices_masters.to_csv('./downloads/masters_indices.csv', index=False)
+    indices_masters.to_csv('./downloads/index_master.csv', index=False)
