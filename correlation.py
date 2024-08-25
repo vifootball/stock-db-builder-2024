@@ -14,15 +14,15 @@ def get_corr(base_history, target_history, unit_period='all_time'):
     if unit_period == 'all_time':
         pass
     elif unit_period == '5year':
-        year_5_ago = pd.to_datetime(history_symbol['date']).max() - pd.DateOffset(years=5)
+        year_5_ago = pd.to_datetime(base_history['date']).max() - pd.DateOffset(years=5)
         base_history = base_history[pd.to_datetime(base_history['date']) >= year_5_ago].reset_index(drop=True)
         target_history = target_history[pd.to_datetime(target_history['date']) >= year_5_ago].reset_index(drop=True)
     elif unit_period == '10year':
-        year_10_ago = pd.to_datetime(history_symbol['date']).max() - pd.DateOffset(years=10)
+        year_10_ago = pd.to_datetime(base_history['date']).max() - pd.DateOffset(years=10)
         base_history = base_history[pd.to_datetime(base_history['date']) >= year_10_ago].reset_index(drop=True)
         target_history = target_history[pd.to_datetime(target_history['date']) >= year_10_ago].reset_index(drop=True)
     elif unit_period == '15year':
-        year_15_ago = pd.to_datetime(history_symbol['date']).max() - pd.DateOffset(years=15)
+        year_15_ago = pd.to_datetime(base_history['date']).max() - pd.DateOffset(years=15)
         base_history = base_history[pd.to_datetime(base_history['date']) >= year_15_ago].reset_index(drop=True)
         target_history = target_history[pd.to_datetime(target_history['date']) >= year_15_ago].reset_index(drop=True)
     else:
@@ -89,18 +89,18 @@ def collect_corrs():
     target_fname_list = sorted([x for x in os.listdir('./downloads/history/etf') if x.endswith('csv')])
 
     # base 마다 target과 의 상관관계를 계산하여 파일로 저장
-    for base_fname in tqdm(base_fname_list[:5], mininterval=0.5):
-        
+    for base_fname in tqdm(base_fname_list[:], mininterval=0.5):
+        time.sleep(0.3)
         corrs_list = []
         
         # Load base history
         base_fpath = os.path.join(dirpath, base_fname)
         base_history = pd.read_csv(base_fpath)
         base_symbol = base_history['symbol'][0]
-        print(base_symbol)
 
+        print(f'[Collect Correlations] [{base_symbol}] Calculating Correlations: Processing')
         # target을 하나씩 불러와서 base와 상관관계 계산
-        for target_fname in target_fname_list[:300]:
+        for target_fname in tqdm(target_fname_list[:],mininterval=0.5):
             
             # Load target history
             target_fpath = os.path.join(dirpath, target_fname)
@@ -120,10 +120,13 @@ def collect_corrs():
         corrs_list['rank_weekly_desc'] = corrs_list.groupby('unit_period')['corr_weekly'].rank(method='max', ascending=False)
         corrs_list['rank_daily_asc'] = corrs_list.groupby('unit_period')['corr_daily'].rank(method='max')
         corrs_list['rank_daily_desc'] = corrs_list.groupby('unit_period')['corr_daily'].rank(method='max', ascending=False)
+        
+        print(f'[Collect Correlations] [{base_symbol}] Calculating Correlations: Completed')
 
         # base에 대한 corrs 파일 저장
         os.makedirs('downloads/correlation/', exist_ok=True)
         corrs_list.to_csv(f'downloads/correlation/{base_symbol}_correlations.csv', index=False)
+        
 
 
     
