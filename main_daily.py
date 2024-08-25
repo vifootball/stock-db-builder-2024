@@ -58,7 +58,7 @@ if __name__ == '__main__':
 
     ray.init(ignore_reinit_error=True,  num_cpus=8) 
 
-    COLLECT HISTORY - ETF
+    # COLLECT HISTORY - ETF
     dirpath_history_etf = './downloads/history/etf'
     tasks_collect_etf_history_from_yf = [collect_history.remote(order, symbol, method='yf', put_dirpath=dirpath_history_etf) for order, symbol in enumerated_etf_symbols[:]]
     ray.get(tasks_collect_etf_history_from_yf)
