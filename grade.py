@@ -108,16 +108,22 @@ def pivot_grades(grades):
 def collect_grades():
     warnings.filterwarnings('ignore', category=RuntimeWarning)
 
-    # 고정 데이터 로드
+    # (1) 고정 데이터 로드
+    # (2) History 데이터 경로 설정
+    # (3) 반복문으로 History에 대한 Grade 수집
+    # (4) 수집한 Grades를 Concat & 저장
+    # (5) Concat한 Grades를 Pivot & 저장
+
+    # (1) 고정 데이터 로드
     masterdata = pd.read_csv("./downloads/etf_masters.csv")
     history_market = pd.read_csv("./downloads/history/etf/SPY_history.csv")
 
-    # 히스토리 데이터 경로 설정
+    # (2) History 데이터 경로 설정
     dirpath = './downloads/history/etf'
     fname_list = sorted(os.listdir('./downloads/history/etf'))
 
-    # 반복문으로 history들에 대한 grade를 구함
-    print("[Collect Grades] [1/3] Collecting Grades...")
+    # (3) 반복문으로 History에 대한 Grade 수집
+    print("[Collect Grades] [1/3] Collecting Grades: Processing")
     grades = []
     for fname in tqdm(fname_list[:], mininterval=0.5):
         fpath = os.path.join(dirpath, fname)
@@ -127,17 +133,19 @@ def collect_grades():
         master_symbol = masterdata[masterdata['symbol']==symbol]
         df = generate_grades_by_period(master_symbol=master_symbol, history_symbol=history_symbol, history_market=history_market)
         grades.append(df)
-    print("[Collect Grades] [1/3] Collecting Grades Completed")
+    print("[Collect Grades] [1/3] Collecting Grades: Completed")
 
-    # concat하여 grades 저장
+    # (4) 수집한 Grades를 Concat & 저장
+    print("[Collect Grades] [2/3] Concatenating Grades: Processing")
     grades = pd.concat(grades).reset_index(drop=True)
     grades.to_csv('./downloads/etf_grades.csv', index=False)
-    print("[Collect Grades] [2/3] Grades Saved")
+    print("[Collect Grades] [2/3] Concatenating Grades: Completed & Saved")
 
-    # concat한거 pivotting 하여 저장
+    # (5) Concat한 Grades를 Pivot & 저장
+    print("[Collect Grades] [3/3] Pivotting Grades: Processing")
     grades_pivotted = pivot_grades(grades)
     grades_pivotted.to_csv('./downloads/etf_grades_pivotted.csv', index=False)
-    print("[Collect Grades] [3/3] Grades Pivotted Saved")
+    print("[Collect Grades] [3/3] Pivotting Grades: Completed & Saved")
 
 
 if __name__ == '__main__':
