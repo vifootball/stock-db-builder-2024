@@ -184,7 +184,7 @@ def get_etf_holdings(symbol: str):
     etf_data = response.get("data", {})
     holdings = etf_data.get('holdings')
     if not holdings:
-        print(f"Empty Response: {symbol}")
+        print(f"[Get Holdings] Empty Response: {symbol}")
         return None
     
     holdings = pd.DataFrame(holdings)
@@ -211,7 +211,7 @@ def get_etf_holdings(symbol: str):
         "as_of_date", "no", "symbol", "name", "weight", "shares"
     ]]
 
-    print(f"Successfully Processed: {symbol}")
+    print(f"[Get Holdings] Successfully Recieved: {symbol}")
     return holdings
 
 
