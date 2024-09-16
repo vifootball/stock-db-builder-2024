@@ -11,6 +11,7 @@ main.bat
 time.csv
 timecheck.py
 between-buy-and-sell-749f539118c3.json
+config.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
