@@ -118,7 +118,7 @@ def get_etf_profile(symbol: str):
        "symbol", "asset_class", "category", "region", "stock_exchange", "fund_family", "index_tracked"
     ]]
     
-    print(f"Successfully Processed: {symbol}")
+    print(f"[Get Profile] Successfully Processed: {symbol}")
     return df
 
 
@@ -168,7 +168,7 @@ def get_etf_info(symbol: str): #measures
     }
     df = pd.DataFrame([data_dict])
     
-    print(f"Successfully Processed: {symbol}")
+    print(f"[Get Info] Successfully Processed: {symbol}")
     return df
 
 
@@ -217,7 +217,7 @@ def get_etf_holdings(symbol: str):
 
 def collect_etf_holdings():
     etf_list = get_symbols()
-    etf_list = [x for x in etf_list if x not in Etfs.EXCLUDE][:]
+    etf_list = [x for x in etf_list if x not in Etfs.EXCLUDE][:10]
 
     for symbol in etf_list:
         time.sleep(0.2)
@@ -228,4 +228,30 @@ def collect_etf_holdings():
             os.makedirs('downloads/etf_holdings/', exist_ok=True)
             etf_holdings.to_csv(f'downloads/etf_holdings/{symbol}_holdings.csv', index=False)
 
-# print(get_etf_info("saaa"))
+
+def collect_etf_profiles():
+    etf_list = get_symbols()
+    etf_list = [x for x in etf_list if x not in Etfs.EXCLUDE][:]
+
+    for symbol in etf_list:
+        time.sleep(0.2)
+        time.sleep(round(random.uniform(0.5, 1.8), 3))
+
+        etf_holdings = get_etf_profile(symbol)
+        if etf_holdings is not None:
+            os.makedirs('downloads/etf_profile/', exist_ok=True)
+            etf_holdings.to_csv(f'downloads/etf_profile/{symbol}_profile.csv', index=False)
+
+
+def collect_etf_infos():
+    etf_list = get_symbols()
+    etf_list = [x for x in etf_list if x not in Etfs.EXCLUDE][:]
+
+    for symbol in etf_list:
+        time.sleep(0.2)
+        time.sleep(round(random.uniform(0.5, 1.8), 3))
+
+        etf_holdings = get_etf_profile(symbol)
+        if etf_holdings is not None:
+            os.makedirs('downloads/etf_info/', exist_ok=True)
+            etf_holdings.to_csv(f'downloads/etf_info/{symbol}_info.csv', index=False)
