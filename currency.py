@@ -11,8 +11,8 @@ def get_currency_master() -> pd.DataFrame:
         return symbol
     currency['symbol'] = currency['name'].apply(_encode_symbol)
     currency = currency.rename(columns={"full_name": "description"})
-    currency['type'] = 'CURRENCY'
-    currency = currency[['type', 'symbol', 'name', 'description']]
+    currency['domain'] = 'CURRENCY'
+    currency = currency[['domain', 'symbol', 'name', 'description']]
 
     return currency
 
