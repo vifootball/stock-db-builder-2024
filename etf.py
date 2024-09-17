@@ -195,21 +195,22 @@ def get_etf_holdings(symbol: str):
         "sh": "shares"
     }, inplace=True)
 
-    if "symbol" not in holdings.columns: # symbol 정보가 딕셔너리에 없는 경우 존재
-        holdings["symbol"] = "n/a"
+    if "holding_symbol" not in holdings.columns: # symbol 정보가 딕셔너리에 없는 경우 존재
+        holdings["holding_symbol"] = "n/a"
     if "shares" not in holdings.columns: # symbol 정보가 딕셔너리에 없는 경우 존재
         holdings["shares"] = "n/a"  
 
     holdings['symbol'] = symbol.upper()
     holdings['holding_symbol'] = holdings['holding_symbol'].str.replace(r'^[$#]', '', regex=True) # 종목 명에 특수문자 들어감 (ETF와 개별주 구분자인듯)
     holdings['weight'] = holdings['weight'].str.replace(',', '').apply(percentage_to_float)
+    holdings['shares'] = holdings['shares'].str.replace(',', '')
 
     date_str = etf_data.get('date')
     date = datetime.strptime(date_str, "%b %d, %Y").strftime("%Y-%m-%d") if date_str is not None else None
     holdings['as_of_date'] = date
 
     holdings = holdings[[
-        "as_of_date", "no", "symbol", "name", "weight", "shares"
+        "symbol", "as_of_date", "no", "holding_symbol", "name", "weight", "shares"
     ]]
 
     print(f"[Get Holdings] Successfully Recieved: {symbol}")
@@ -228,6 +229,7 @@ def collect_etf_holdings():
         if etf_holdings is not None:
             os.makedirs('downloads/etf_holdings/', exist_ok=True)
             etf_holdings.to_csv(f'downloads/etf_holdings/{symbol}_holdings.csv', index=False)
+            print(f"Saved: {symbol}")
 
 
 def collect_etf_profiles():
