@@ -189,7 +189,7 @@ def get_etf_holdings(symbol: str):
     
     holdings = pd.DataFrame(holdings)
     holdings.rename(columns={
-        "s": "symbol",
+        "s": "holding_symbol",
         "n": "name",
         "as": "weight",
         "sh": "shares"
@@ -200,7 +200,8 @@ def get_etf_holdings(symbol: str):
     if "shares" not in holdings.columns: # symbol 정보가 딕셔너리에 없는 경우 존재
         holdings["shares"] = "n/a"  
 
-    holdings['symbol'] = holdings['symbol'].str.replace(r'^[$#]', '', regex=True) # 종목 명에 특수문자 들어감 (ETF와 개별주 구분자인듯)
+    holdings['symbol'] = symbol.upper()
+    holdings['holding_symbol'] = holdings['holding_symbol'].str.replace(r'^[$#]', '', regex=True) # 종목 명에 특수문자 들어감 (ETF와 개별주 구분자인듯)
     holdings['weight'] = holdings['weight'].str.replace(',', '').apply(percentage_to_float)
 
     date_str = etf_data.get('date')
@@ -217,7 +218,7 @@ def get_etf_holdings(symbol: str):
 
 def collect_etf_holdings():
     etf_list = get_symbols()
-    etf_list = [x for x in etf_list if x not in Etfs.EXCLUDE][:10]
+    etf_list = [x for x in etf_list if x not in Etfs.EXCLUDE][:]
 
     for symbol in etf_list:
         time.sleep(0.2)
@@ -235,12 +236,12 @@ def collect_etf_profiles():
 
     for symbol in etf_list:
         time.sleep(0.2)
-        time.sleep(round(random.uniform(0.5, 1.8), 3))
+        time.sleep(round(random.uniform(0.3, 1.8), 3))
 
-        etf_holdings = get_etf_profile(symbol)
-        if etf_holdings is not None:
+        etf_profiles = get_etf_profile(symbol)
+        if etf_profiles is not None:
             os.makedirs('downloads/etf_profile/', exist_ok=True)
-            etf_holdings.to_csv(f'downloads/etf_profile/{symbol}_profile.csv', index=False)
+            etf_profiles.to_csv(f'downloads/etf_profile/{symbol}_profile.csv', index=False)
 
 
 def collect_etf_infos():
@@ -249,9 +250,9 @@ def collect_etf_infos():
 
     for symbol in etf_list:
         time.sleep(0.2)
-        time.sleep(round(random.uniform(0.5, 1.8), 3))
+        time.sleep(round(random.uniform(0.3, 1.8), 3))
 
-        etf_holdings = get_etf_profile(symbol)
-        if etf_holdings is not None:
+        etf_infos = get_etf_info(symbol)
+        if etf_infos is not None:
             os.makedirs('downloads/etf_info/', exist_ok=True)
-            etf_holdings.to_csv(f'downloads/etf_info/{symbol}_info.csv', index=False)
+            etf_infos.to_csv(f'downloads/etf_info/{symbol}_info.csv', index=False)
