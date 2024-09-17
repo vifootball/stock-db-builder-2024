@@ -72,11 +72,11 @@ def calculate_grade(master_symbol, history_symbol, history_market, unit_period='
 def generate_grades_by_period(master_symbol, history_symbol, history_market):
     """다양한 기간에 대한 summary grade 생성."""
     
-    inception_date = pd.to_datetime(master_symbol['inception_date']).squeeze()
+    avilable_start_date = pd.to_datetime(history_symbol['date'].min())
     current_date = pd.to_datetime(history_symbol['date'].max())
     
     # 사용 가능한 unit_periods 동적으로 계산
-    years_elapsed = (current_date - inception_date).days / 365.25
+    years_elapsed = (current_date - avilable_start_date).days / 365.25
     unit_periods = ['all_time']
     
     if years_elapsed > 5:
@@ -115,7 +115,7 @@ def collect_grades():
     # (5) Concat한 Grades를 Pivot & 저장
 
     # (1) 고정 데이터 로드
-    masterdata = pd.read_csv("./downloads/etf_masters.csv")
+    masterdata = pd.read_csv("./downloads/master/etf_master.csv")
     history_market = pd.read_csv("./downloads/history/etf/SPY_history.csv")
 
     # (2) History 데이터 경로 설정
