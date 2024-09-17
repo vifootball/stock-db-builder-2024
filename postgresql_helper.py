@@ -145,17 +145,3 @@ def copy_csv_file_to_db(csv_file_path, table_name, create_table_query):
     finally:
         # 연결 닫기
         connection.close()    
-
-
-if __name__ == "__main__":
-    create_database(database_name="stock_db_2024")
-    print()
-
-    # COPY FILES TO DB: DW_L1_HISTORY
-    # copy_csv_files_to_db(
-    #     csv_dir_path = os.path.join("downloads", "history", "chunks"),
-    #     table_name = "DW_L1_HISTORY",
-    #     create_table_query = CREATE_TABLE_DW_L1_HISTORY
-    # )
-    
-    # COPY FILE TO DB: DW_L0_SYMBOL_MASTER
