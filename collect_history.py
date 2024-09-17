@@ -14,13 +14,13 @@ warnings.filterwarnings('ignore', category=FutureWarning)
 # LOAD SYMBOLS
 
 # LOAD SYMBOLS - ETF
-etf_master = pd.read_csv(os.path.join('downloads', 'etf_masters.csv'))
+etf_master = pd.read_csv(os.path.join('downloads', 'master', 'etf_master.csv'))
 etf_symbols = etf_master['symbol'].to_list()
 etf_symbols = [x for x in etf_symbols if x not in Etfs.EXCLUDE][:100]
 enumerated_etf_symbols = list(enumerate(etf_symbols)) # ray에러 방지용으로 반복문마다 실행순서를 부여하고 이에 따라 약간의 delay를 주는데, 그 순서를 enumerate로 가져옴
 
 # LOAD SYMBOLS - CURRENCY
-currency_master = pd.read_csv(os.path.join('downloads', 'currency_master.csv'))
+currency_master = pd.read_csv(os.path.join('downloads', 'master', 'currency_master.csv'))
 currency_symbols = currency_master['symbol'].to_list()
 enumerated_currency_symbols = list(enumerate(currency_symbols))
 
