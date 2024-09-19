@@ -137,3 +137,6 @@ if __name__ == '__main__':
         table_name = 'DM_GRADE_PIVOT',
         create_table_query = CREATE_TABLE_DM_GRADE_PIVOT
     )
+
+    end_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")[:-4]
+    print(f"Done: {end_time}")
