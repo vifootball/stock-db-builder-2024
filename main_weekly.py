@@ -2,6 +2,7 @@ from etf import *
 from utils import *
 from postgresql_helper import *
 from postgresql_queries import *
+from datetime import datetime
 
 # path setting for Cron: 다음 명령어로 체크 print(os.path.abspath('.'))
 os.chdir('/Users/chungdongwook/dongwook-src/stock-db-builder-2024')
@@ -65,3 +66,6 @@ if __name__ == '__main__':
         table_name = 'DW_L1_HOLDINGS',
         create_table_query = CREATE_TABLE_DW_L1_HOLDINGS
     )
+
+    end_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")[:-4]
+    print(f"Done: {end_time}")
